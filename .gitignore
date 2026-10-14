@@ -12,5 +12,12 @@ env/
 
 # User and temporary files
 *.zip
+*.pptx
 .DS_Store
 Thumbs.db
+
+# Generated outputs & static mockups
+output/
+inspo_design/
+generate_*.py
+align_all_datasets.py
