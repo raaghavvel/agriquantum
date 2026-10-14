@@ -21,3 +21,7 @@ output/
 inspo_design/
 generate_*.py
 align_all_datasets.py
+
+# Internal / Confidential documentation
+PRESENTATION_STUDY_GUIDE.md
+PROJECT_ARCHITECTURE.md
