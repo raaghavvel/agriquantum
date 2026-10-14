@@ -1,0 +1,41 @@
+crop_id,crop_name,crop_group,default_unit,perishable_flag
+C001,Rice,Cereal,kg,0
+C002,Maize,Cereal,kg,0
+C003,Ragi,Cereal,kg,0
+C004,Jowar,Cereal,kg,0
+C005,Bajra,Cereal,kg,0
+C006,Korra,Cereal,kg,0
+C007,Samai,Cereal,kg,0
+C008,Varagu,Cereal,kg,0
+C009,Tur (Arhar),Pulse,kg,0
+C010,Urad,Pulse,kg,0
+C011,Moong,Pulse,kg,0
+C012,Cowpea,Pulse,kg,0
+C013,Horse Gram,Pulse,kg,0
+C014,Lab Lab,Pulse,kg,0
+C015,Tomato,Vegetable,kg,1
+C016,Onion,Vegetable,kg,0
+C017,Dry Chillies,Vegetable,kg,0
+C018,Potato,Vegetable,kg,0
+C019,Tapioca,Vegetable,kg,0
+C020,Coriander,Vegetable,kg,1
+C021,Turmeric,Vegetable,kg,0
+C022,Fresh F&V (Mixed),Vegetable,kg,1
+C023,Banana,Fruit,kg,1
+C024,Mango,Fruit,kg,1
+C025,Coconut,Fruit,nos,0
+C026,Grapes,Fruit,kg,1
+C027,Arecanut,Fruit,kg,0
+C028,Cashewnut,Fruit,kg,0
+C029,Groundnut,Oilseed,kg,0
+C030,Sesame,Oilseed,kg,0
+C031,Castor Seed,Oilseed,kg,0
+C032,Sunflower,Oilseed,kg,0
+C033,Neem Seeds,Oilseed,kg,0
+C034,Cotton Lint,Fibre,kg,0
+C035,Cotton Seeds,Fibre,kg,0
+C036,Sugarcane Jaggery,Commercial,kg,0
+C037,Palm Sugar Jaggery,Commercial,kg,0
+C038,Tamarind,Commercial,kg,0
+C039,Tobacco,Commercial,kg,0
+C040,Silk Cotton,Fibre,kg,0

@@ -1,0 +1,9 @@
+vehicle_id,vehicle_type,capacity_kg,mileage_km_per_litre,fixed_cost_per_trip,start_source_id,available_from,available_until
+V001,Mahindra Bolero Pik-Up (Light Truck),1500,13,600,S007,05:00,18:00
+V002,Mahindra Bolero Pik-Up (Light Truck),1500,13,600,S026,05:00,18:00
+V003,Tata Ace (Mini Truck),1000,15,400,S002,05:00,18:00
+V004,Mahindra Bolero Pik-Up (Light Truck),1500,13,600,S036,05:00,18:00
+V005,Tata Ace (Mini Truck),1000,15,400,S011,05:00,18:00
+V006,Mahindra Bolero Pik-Up (Light Truck),1500,13,600,S006,05:00,18:00
+V007,Tata Ace (Mini Truck),1000,15,400,S018,05:00,18:00
+V008,Eicher Pro 1049 (Light Truck),4900,8,1300,S003,04:00,22:00

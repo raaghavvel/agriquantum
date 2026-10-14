@@ -1,0 +1,5 @@
+batch_id,market_id,crop_id,quantity_kg,revenue,transport_cost,late_penalty,net_profit,feasible,crop_name,market_name,source_name,distance_km,travel_min
+B001,TN_US_105,C016,1626.0,150405.0,1206.6718061538463,0.0,149198.32819384616,True,Onion,Vengamedu,Thondamuthur Collection Centre,85.023,86.17
+B002,TN_US_105,C016,856.0,79180.0,1568.4429415384616,0.0,77611.55705846153,True,Onion,Vengamedu,Musiri Collection Centre,135.724,114.75
+B004,TN_US_062,C015,1957.0,62624.0,1079.326596923077,0.0,61544.67340307692,True,Tomato,Palladam,Sathyamangalam Collection Centre,67.176,59.32
+B003,TN_US_105,C015,1334.0,43355.0,1642.4582861538463,0.0,41712.541713846156,True,Tomato,Vengamedu,Periyakulam Collection Centre,146.097,141.41

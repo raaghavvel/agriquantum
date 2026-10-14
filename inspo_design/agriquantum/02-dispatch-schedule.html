@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="generator" content="inspoai-v3"/>
+<meta name="inspoai-dna" content="swiss-mono"/>
+<meta name="inspoai-platform" content="web"/>
+<meta name="inspoai-taste" content="v2"/>
+<title>AgriQuantum — Dispatch Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = {"theme":{"extend":{"colors":{"base":"#FAFAF8","base-token":"#FAFAF8","surface":"#FFFFFF","raised":"#F0F0EC","line":"#D9D9D2","ink":"#111110","muted":"#6B6B64","accent":"#FF4D00","accentInk":"#FFFFFF","accent2":"#111110"},"fontFamily":{"display":["Space Grotesk","sans-serif"],"body":["Inter","sans-serif"],"mono":["IBM Plex Mono","monospace"]},"borderRadius":{"card":"0px"}}}};</script>
+<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style>
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { font-family: 'Inter', sans-serif; background: #FAFAF8; color: #111110; }
+  /* Canvas embed: the canvas auto-sizes the iframe to the page's full height,
+  so 100vh sections would balloon with it (measure → grow → re-expand loop).
+  When embedded, pin *-screen sections to a fixed desktop viewport instead. */
+  .v3-embedded .h-screen { height: 900px !important; }
+  .v3-embedded .min-h-screen { min-height: 900px !important; }
+  ::selection { background: #FF4D0033; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #D9D9D2; border-radius: 8px; border: 2px solid #FAFAF8; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  iconify-icon { display: inline-block; vertical-align: middle; }
+  /* Photos must never distort: cover-crop instead of stretch when a sized
+     container disagrees with the image's aspect ratio (browser default is
+     "fill"). Images without forced dimensions are unaffected. */
+  img { object-fit: cover; }
+  [x-cloak] { display: none !important; }
+  input, textarea, select, button { font-family: inherit; }
+  html { scroll-behavior: smooth; }
+  /* Inline text editing (canvas editor only — the shell script arms it when embedded) */
+  .v3-editing { outline: 2px dashed #FF4D00; outline-offset: 3px; border-radius: 4px; cursor: text !important; }
+  /* Scroll-reveal (auto-applied by the shell script below).
+     Taste v2: content is NEVER hidden waiting for a reveal (the anti-slop
+     law's invisible-content trap — a failed observer, a screenshot pass or an
+     export must still show the full page). The motion becomes a settle from a
+     small offset: always readable, never opacity-gated. */
+  @media (prefers-reduced-motion: no-preference) {
+    .v3-reveal { transform: translateY(16px); }
+    .v3-reveal.v3-in { transform: none; transition: transform 0.65s cubic-bezier(0.22,1,0.36,1); }
+    a, button { transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease; }
+  }
+  /* One-time confetti burst (auto-armed by [data-confetti] — see script below) */
+  @keyframes v3-confetti-burst {
+    0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translate(var(--v3cx), var(--v3cy)) rotate(var(--v3cr)) scale(0.4); opacity: 0; }
+  }
+  .v3-confetti-piece {
+    position: fixed; top: 0; left: 0; width: 8px; height: 8px; pointer-events: none; z-index: 9999;
+    animation: v3-confetti-burst 1.1s cubic-bezier(0.15,0.7,0.3,1) forwards;
+  }
+  /* Shared film-grain texture for the photo treatment layer (lint.js) — one
+     data-URI noise tile, reused via mix-blend-mode + opacity, never
+     regenerated per image. */
+  .v3-grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 140px 140px;
+    mix-blend-mode: overlay;
+  }
+</style>
+<script>
+  // Embedded documents (canvas iframes): the canvas auto-sizes the iframe to
+  // the page's full height, so any vh-based sizing would balloon with it
+  // (measure -> grow -> re-expand loop). Pin EVERY vh-derived Tailwind class
+  // to a fixed 900px reference viewport via inline styles (beats everything).
+  // Real tabs (live preview, downloaded code) keep true viewport units.
+  // AI-generated images (pollinations renders on demand) can time out or 502
+  // under burst load: retry once with a cache-buster, then swap to a stock
+  // fallback — a broken-image icon must never ship.
+  document.addEventListener('error', function (e) {
+    var el = e.target;
+    if (!el || el.tagName !== 'IMG' || !el.src) return;
+    var n = +(el.getAttribute('data-v3-retry') || 0);
+    el.setAttribute('data-v3-retry', String(n + 1));
+    if (n < 2) {
+      // 429s need breathing room: 3s, then 8s, staggered per image
+      var src = el.src.replace(/[?&]v3r=d+/, '');
+      var wait = (n === 0 ? 3000 : 8000) + Math.random() * 2000;
+      setTimeout(function () { el.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'v3r=' + Date.now(); }, wait);
+    } else {
+      var h = 0, s = el.src;
+      for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+      el.src = 'https://picsum.photos/seed/v3' + h + '/1200/900';
+    }
+  }, true);
+
+  window.__v3FixVh = function () {};
+  if (window.self !== window.top) {
+    document.documentElement.classList.add('v3-embedded');
+    window.__v3FixVh = function () {
+      var PX_PER_VH = 9; // 900px reference viewport
+      document.querySelectorAll('[class]').forEach(function (el) {
+        el.classList.forEach(function (c) {
+          var m;
+          if (/^h-(screen|dvh|svh|lvh)$/.test(c)) el.style.setProperty('height', '900px', 'important');
+          else if (/^min-h-(screen|dvh|svh|lvh)$/.test(c)) el.style.setProperty('min-height', '900px', 'important');
+          else if (/^max-h-(screen|dvh|svh|lvh)$/.test(c)) el.style.setProperty('max-height', '900px', 'important');
+          else if ((m = c.match(/^h-[(d+)(?:d|s|l)?vh]$/))) el.style.setProperty('height', (m[1] * PX_PER_VH) + 'px', 'important');
+          else if ((m = c.match(/^min-h-[(d+)(?:d|s|l)?vh]$/))) el.style.setProperty('min-height', (m[1] * PX_PER_VH) + 'px', 'important');
+          else if ((m = c.match(/^max-h-[(d+)(?:d|s|l)?vh]$/))) el.style.setProperty('max-height', (m[1] * PX_PER_VH) + 'px', 'important');
+        });
+        // Inline style="...vh" from the model gets the same treatment
+        var st = el.getAttribute('style');
+        if (st && /d(?:d|s|l)?vh/.test(st)) {
+          el.setAttribute('style', st.replace(/(d+(?:.d+)?)(?:d|s|l)?vh/g, function (_, n) { return (parseFloat(n) * PX_PER_VH) + 'px'; }));
+        }
+      });
+    };
+    addEventListener('DOMContentLoaded', window.__v3FixVh);
+
+    // Inline text editing: double-click any pure-text element to edit it in
+    // place. On commit the new text is posted to the canvas, which patches the
+    // stored document (the live DOM already shows the edit — no reload).
+    var v3EditEl = null, v3EditOrig = '', v3EditOrigHtml = '', v3EditIdx = 0;
+    var v3Norm = function (s) { return String(s || '').replace(/\s+/g, ' ').trim(); };
+    // Editable = text with at most <br> line breaks inside (multi-line
+    // headlines) — anything with real child markup keeps its styling safe.
+    var v3Editable = function (el) {
+      if (!v3Norm(el.textContent)) return false;
+      for (var i = 0; i < el.children.length; i++) {
+        if (el.children[i].tagName !== 'BR') return false;
+      }
+      return true;
+    };
+    function v3EndEdit(commit) {
+      var el = v3EditEl; if (!el) return; v3EditEl = null;
+      el.removeAttribute('contenteditable');
+      el.classList.remove('v3-editing');
+      if (!commit) { el.innerHTML = v3EditOrigHtml; return; }
+      if (el.innerHTML === v3EditOrigHtml) return;
+      parent.postMessage({
+        type: 'v3-edit',
+        tag: el.tagName.toLowerCase(),
+        origText: v3EditOrig,
+        newText: el.textContent,
+        newHtml: el.innerHTML,
+        matchIndex: v3EditIdx
+      }, '*');
+    }
+    document.addEventListener('dblclick', function (e) {
+      var t = e.target && e.target.closest && e.target.closest('h1,h2,h3,h4,h5,h6,p,a,button,span,li,td,th,dt,dd,blockquote,figcaption,label,legend,summary');
+      if (!t || t === v3EditEl) return;
+      if (!v3Editable(t)) return;
+      e.preventDefault(); e.stopPropagation();
+      if (v3EditEl) v3EndEdit(true);
+      v3EditEl = t; v3EditOrig = t.textContent; v3EditOrigHtml = t.innerHTML;
+      // Which duplicate is this? (e.g. two "Learn more" buttons) — lets the
+      // canvas patch the right one in the source document.
+      var same = [].filter.call(document.querySelectorAll(t.tagName), function (n) {
+        return v3Editable(n) && v3Norm(n.textContent) === v3Norm(v3EditOrig);
+      });
+      v3EditIdx = Math.max(0, [].indexOf.call(same, t));
+      try { t.contentEditable = 'plaintext-only'; } catch (_) { t.contentEditable = 'true'; }
+      t.classList.add('v3-editing');
+      t.focus();
+    }, true);
+    document.addEventListener('focusout', function (e) { if (v3EditEl && e.target === v3EditEl) v3EndEdit(true); }, true);
+    document.addEventListener('keydown', function (e) {
+      if (!v3EditEl) return;
+      if (e.key === 'Escape') { e.preventDefault(); v3EndEdit(false); }
+      else if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); v3EditEl.blur(); }
+    }, true);
+    // While editing a link/button, a click must not navigate or toggle anything
+    document.addEventListener('click', function (e) {
+      if (v3EditEl && v3EditEl.contains(e.target)) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
+  }
+  // Live-build channel: the canvas injects streamed body updates without
+  // reloading the document (a reload would re-fetch Tailwind/fonts each time).
+  addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'v3-body' && typeof e.data.html === 'string') {
+      document.body.innerHTML = e.data.html;
+      window.__v3FixVh();
+    } else if (e.data && e.data.type === 'v3-html' && typeof e.data.html === 'string') {
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(e.data.html, 'text/html');
+        
+        // 1. Update body contents
+        document.body.innerHTML = doc.body.innerHTML;
+        document.body.className = doc.body.className;
+        if (doc.body.style.cssText) {
+          document.body.style.cssText = doc.body.style.cssText;
+        }
+        
+        // 2. Update Tailwind config dynamically
+        const configScript = doc.querySelector('script:not([src])');
+        if (configScript && window.tailwind) {
+          try {
+            const match = configScript.innerHTML.match(/tailwind.configs*=s*([sS]*)/);
+            if (match) {
+              const configObj = new Function('return ' + match[1].trim())();
+              tailwind.config = configObj;
+            }
+          } catch (err) {
+            console.error('Tailwind config re-evaluation failed:', err);
+          }
+        }
+        
+        // 3. Update Google Fonts link
+        const oldFontLink = document.querySelector('link[href*="fonts.googleapis.com"]');
+        const newFontLink = doc.querySelector('link[href*="fonts.googleapis.com"]');
+        if (oldFontLink && newFontLink) {
+          oldFontLink.href = newFontLink.href;
+        }
+        
+        // 4. Update head style tag (scrollbars, selection colors)
+        const oldStyle = document.querySelector('style');
+        const newStyle = doc.querySelector('style');
+        if (oldStyle && newStyle) {
+          oldStyle.innerHTML = newStyle.innerHTML;
+        }
+        window.__v3FixVh();
+      } catch (err) {
+        console.error('v3-html instant retheme failed:', err);
+      }
+    }
+  });
+</script>
+<script>
+  // Framer-motion-style entrance: top-level sections/cards fade-slide in with
+  // a stagger as they scroll into view; on marketing pages each section's own
+  // content (headlines, copy, images, cards) staggers in too. Deterministic —
+  // never model-written.
+  addEventListener('DOMContentLoaded', () => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // App chrome (sidebars, navs, tab bars, headers) must NEVER be animated —
+    // only page content. In app shells animate the main column's children;
+    // on marketing pages animate top-level sections.
+    const isAppShell = !!document.querySelector('aside, [class*="h-screen"]');
+    let targets;
+    if (isAppShell) {
+      const main = document.querySelector('main') || document.body;
+      targets = Array.from(main.children).filter(el => !['HEADER', 'NAV', 'ASIDE'].includes(el.tagName));
+      // If main has a single content wrapper, animate its children instead
+      if (targets.length === 1 && targets[0].children.length > 1) targets = Array.from(targets[0].children);
+    } else {
+      const roots = document.querySelectorAll('body > section, body > footer, body > div > section, body > div > footer, main > section');
+      targets = roots.length > 1 ? Array.from(roots) : [];
+    }
+    // Marketing sections: stagger the section's content row-by-row. Descend
+    // through single-wrapper containers to the real content children.
+    const markChildren = (section) => {
+      let root = section;
+      while (root.children.length === 1 && root.children[0].children.length) root = root.children[0];
+      const kids = Array.from(root.children).filter(k => !['SCRIPT', 'STYLE'].includes(k.tagName)).slice(0, 10);
+      if (kids.length < 2) return;
+      kids.forEach((k, i) => {
+        k.classList.add('v3-reveal');
+        k.style.transitionDelay = Math.min(i * 80, 480) + 'ms';
+      });
+    };
+    let order = 0;
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const el = e.target;
+        setTimeout(() => {
+          el.classList.add('v3-in');
+          el.querySelectorAll('.v3-reveal').forEach(k => k.classList.add('v3-in'));
+        }, (order++ % 4) * 90);
+        io.unobserve(el);
+      }
+    }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+    targets.forEach(el => {
+      if (['SCRIPT', 'STYLE', 'NAV', 'ASIDE', 'HEADER'].includes(el.tagName)) return;
+      el.classList.add('v3-reveal');
+      if (!isAppShell) markChildren(el);
+      io.observe(el);
+    });
+    // Safety: anything hidden but already inside the viewport after 1.5s
+    // becomes visible. Below-the-fold content stays armed so the reveal
+    // still plays when the user scrolls to it.
+    setTimeout(() => {
+      document.querySelectorAll('.v3-reveal:not(.v3-in)').forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (r.top < innerHeight && r.bottom > 0) el.classList.add('v3-in');
+      });
+    }, 1500);
+    // Buttery inertia scrolling (Lenis) on marketing pages — app shells keep
+    // native scrolling for their inner panels.
+    if (!isAppShell && document.body.scrollHeight > innerHeight * 1.2) {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js';
+      s.onload = () => {
+        try {
+          document.documentElement.style.scrollBehavior = 'auto'; // Lenis replaces CSS smooth scroll
+          const lenis = new Lenis({ duration: 1.1, smoothWheel: true, anchors: true });
+          const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+          requestAnimationFrame(raf);
+        } catch (err) { /* native scrolling still works */ }
+      };
+      document.head.appendChild(s);
+    }
+  });
+</script>
+<script>
+  // One-time confetti burst for celebration/success moments. The model marks
+  // the moment with a bare data-confetti attribute — no JS, no external
+  // library (Lottie/canvas-confetti CDNs are never loaded in this shell and
+  // would render broken/static). Fires exactly once per element, on-brand
+  // colors, self-cleans — never a loop.
+  addEventListener('DOMContentLoaded', () => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const v3ConfettiColors = ['#FF4D00', '#111110', '#FF4D00', '#111110'];
+    document.querySelectorAll('[data-confetti]').forEach((el) => {
+      el.removeAttribute('data-confetti');
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+      const pieces = [];
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < 26; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 60 + Math.random() * 120;
+        const p = document.createElement('span');
+        p.className = 'v3-confetti-piece';
+        p.style.left = cx + 'px';
+        p.style.top = cy + 'px';
+        p.style.background = v3ConfettiColors[i % v3ConfettiColors.length];
+        p.style.borderRadius = i % 3 === 0 ? '50%' : '2px';
+        p.style.setProperty('--v3cx', Math.cos(angle) * dist + 'px');
+        p.style.setProperty('--v3cy', (Math.sin(angle) * dist - 40) + 'px');
+        p.style.setProperty('--v3cr', (Math.random() * 480 - 240) + 'deg');
+        p.style.animationDelay = (Math.random() * 120) + 'ms';
+        frag.appendChild(p);
+        pieces.push(p);
+      }
+      document.body.appendChild(frag);
+      setTimeout(() => pieces.forEach((p) => p.remove()), 1500);
+    });
+  });
+</script>
+<script>
+  // Selective hero background: a lightweight Canvas2D animated gradient-blob
+  // field (never WebGL/Three.js — deliberately cheap, deterministic, and
+  // impossible for the model to get wrong since it never writes the canvas
+  // code itself). The model only opts a hero section in via a bare
+  // data-hero-canvas attribute; this mounts and animates it in this DNA's
+  // own accent colors. z-index:-1 keeps it behind normal in-flow content
+  // without needing to touch the model's own markup.
+  addEventListener('DOMContentLoaded', () => {
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const heroColors = ['#FF4D00', '#111110', '#FF4D00'];
+    document.querySelectorAll('[data-hero-canvas]').forEach((el) => {
+      el.removeAttribute('data-hero-canvas');
+      if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+      const canvas = document.createElement('canvas');
+      canvas.style.cssText = 'position:absolute;inset:0;z-index:-1;pointer-events:none;filter:blur(60px);';
+      el.prepend(canvas);
+      const ctx = canvas.getContext('2d');
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      function resize() {
+        canvas.width = Math.max(1, el.clientWidth * dpr);
+        canvas.height = Math.max(1, el.clientHeight * dpr);
+        canvas.style.width = el.clientWidth + 'px';
+        canvas.style.height = el.clientHeight + 'px';
+      }
+      resize();
+      addEventListener('resize', resize);
+      const blobs = heroColors.map(() => ({
+        color: heroColors[Math.floor(Math.random() * heroColors.length)],
+        baseX: 0.2 + Math.random() * 0.6,
+        baseY: 0.2 + Math.random() * 0.6,
+        r: 0.32 + Math.random() * 0.22,
+        speed: 0.00012 + Math.random() * 0.00008,
+        phase: Math.random() * Math.PI * 2,
+        driftX: 0.12 + Math.random() * 0.08,
+        driftY: 0.10 + Math.random() * 0.06
+      }));
+      function paint(t) {
+        const w = canvas.width, h = canvas.height;
+        if (!w || !h) return;
+        ctx.clearRect(0, 0, w, h);
+        blobs.forEach((b) => {
+          const x = (b.baseX + Math.sin(t * b.speed + b.phase) * b.driftX) * w;
+          const y = (b.baseY + Math.cos(t * b.speed * 0.8 + b.phase) * b.driftY) * h;
+          const r = b.r * Math.max(w, h);
+          const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+          g.addColorStop(0, b.color + '55');
+          g.addColorStop(1, b.color + '00');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+      if (reduceMotion) {
+        paint(0);
+      } else {
+        const loop = (t) => { paint(t); requestAnimationFrame(loop); };
+        requestAnimationFrame(loop);
+      }
+    });
+  });
+</script>
+</head>
+<body class="font-body">
+<aside class="fixed left-0 top-0 z-30 flex h-screen w-60 flex-col border-r border-line bg-surface">
+    <div class="flex items-center gap-2.5 border-b border-line px-5 py-5">
+      <div class="grid h-8 w-8 shrink-0 place-items-center rounded-card bg-accent">
+        <span class="text-xs font-bold text-accentInk">AG</span>
+      </div>
+      <span class="font-display text-lg font-semibold tracking-tight text-ink truncate">AgriQuantum</span>
+    </div>
+    <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+      <a href="#" class="flex items-center gap-3 rounded-card px-3 py-2.5 text-sm font-medium transition text-muted hover:bg-raised hover:text-ink">
+        <iconify-icon icon="lucide:layout-dashboard" class="text-lg"></iconify-icon>
+        Dispatch Console
+      </a>
+      <a href="#" class="flex items-center gap-3 rounded-card px-3 py-2.5 text-sm font-medium transition bg-accent/10 text-accent">
+        <iconify-icon icon="lucide:calendar-clock" class="text-lg"></iconify-icon>
+        Schedule
+      </a>
+      <a href="#" class="flex items-center gap-3 rounded-card px-3 py-2.5 text-sm font-medium transition text-muted hover:bg-raised hover:text-ink">
+        <iconify-icon icon="lucide:cpu" class="text-lg"></iconify-icon>
+        Solvers
+      </a>
+      <a href="#" class="flex items-center gap-3 rounded-card px-3 py-2.5 text-sm font-medium transition text-muted hover:bg-raised hover:text-ink">
+        <iconify-icon icon="lucide:warehouse" class="text-lg"></iconify-icon>
+        Centres
+      </a>
+      <a href="#" class="flex items-center gap-3 rounded-card px-3 py-2.5 text-sm font-medium transition text-muted hover:bg-raised hover:text-ink">
+        <iconify-icon icon="lucide:route" class="text-lg"></iconify-icon>
+        Routes
+      </a>
+      <a href="#" class="flex items-center gap-3 rounded-card px-3 py-2.5 text-sm font-medium transition text-muted hover:bg-raised hover:text-ink">
+        <iconify-icon icon="lucide:file-bar-chart" class="text-lg"></iconify-icon>
+        Reports
+      </a>
+      <a href="#" class="flex items-center gap-3 rounded-card px-3 py-2.5 text-sm font-medium transition text-muted hover:bg-raised hover:text-ink">
+        <iconify-icon icon="lucide:settings" class="text-lg"></iconify-icon>
+        Settings
+      </a>
+    </nav>
+    <div class="border-t border-line px-4 py-4">
+      <div class="flex items-center gap-3">
+        <img src="https://i.pravatar.cc/150?u=priya-nair" alt="Priya Nair" class="h-9 w-9 shrink-0 rounded-full border border-line">
+        <p class="min-w-0 flex-1 truncate text-sm font-medium text-ink">Priya Nair</p>
+      </div>
+    </div>
+  </aside><main class="ml-60"><div class="min-h-screen bg-base">
+  <!-- Page header -->
+  
+    <div class="px-8 py-6">
+      <div class="flex items-start justify-between gap-8">
+        <div>
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-xs uppercase tracking-wider text-muted">02 / Schedule</span>
+            <span class="h-3 w-px bg-line"></span>
+            <span class="font-mono text-xs uppercase tracking-wider text-muted">28 Jun 2026</span>
+          </div>
+          <h1 class="font-display text-xl font-semibold tracking-tight text-ink">Dispatch Schedule</h1>
+          <p class="mt-2 max-w-xl text-sm leading-relaxed text-muted">Planned routes across 7 centres, solved on the current batch window. Feasibility tags update as telemetry lands.</p>
+        </div>
+        <div class="flex shrink-0 items-center gap-2">
+          <button class="border border-line bg-surface px-3 py-2 text-xs font-medium text-muted transition-colors hover:border-ink/30 hover:text-ink">
+            <iconify-icon icon="lucide:refresh-cw" class="align-middle text-[14px]"></iconify-icon>
+            <span class="ml-1.5 align-middle font-mono uppercase tracking-wider">Re-solve all</span>
+          </button>
+          <button class="border border-ink bg-ink px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-accent hover:text-accentInk">
+            <iconify-icon icon="lucide:download" class="align-middle text-[14px]"></iconify-icon>
+            <span class="ml-1.5 align-middle font-mono uppercase tracking-wider">Export CSV</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  
+
+  <!-- Stat strip -->
+  <section class="border-b border-line bg-surface">
+    <div class="grid grid-cols-4 divide-x divide-line">
+      <div class="px-8 py-5">
+        <p class="font-mono text-xs uppercase tracking-wider text-muted">Routes planned</p>
+        <p class="mt-2 font-display text-2xl font-medium tabular-nums text-ink">1,284</p>
+      </div>
+      <div class="px-8 py-5">
+        <p class="font-mono text-xs uppercase tracking-wider text-muted">Verified optimum</p>
+        <p class="mt-2 font-display text-2xl font-medium tabular-nums text-ink">742</p>
+      </div>
+      <div class="px-8 py-5">
+        <p class="font-mono text-xs uppercase tracking-wider text-muted">In transit</p>
+        <p class="mt-2 font-display text-2xl font-medium tabular-nums text-ink">196</p>
+      </div>
+      <div class="px-8 py-5">
+        <p class="font-mono text-xs uppercase tracking-wider text-muted">Avg solve time</p>
+        <p class="mt-2 font-display text-2xl font-medium tabular-nums text-ink">4.2<span class="ml-1 text-sm text-muted">s</span></p>
+      </div>
+    </div>
+  </section>
+
+  <main class="px-8 py-8" x-data="{ status: 'All', region: 'All' }">
+    <!-- Filter bar -->
+    <div class="border border-line bg-surface">
+      <div class="flex items-center justify-between border-b border-line px-5 py-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-xs uppercase tracking-wider text-muted">01</span>
+          <h2 class="font-display text-sm font-medium text-ink">Filters</h2>
+        </div>
+        <span class="font-mono text-xs uppercase tracking-wider text-muted">Batch window 2026-06-28</span>
+      </div>
+      <div class="grid grid-cols-12 divide-x divide-line">
+        <div class="col-span-3 px-5 py-4">
+          <label class="font-mono text-xs uppercase tracking-wider text-muted">Status</label>
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            <template x-for="opt in ['All','FEASIBLE','VERIFIED OPTIMUM','IN TRANSIT']" :key="opt">
+              <button @click="status = opt" :class="status === opt ? 'border-ink bg-ink text-white' : 'border-line bg-surface text-muted hover:border-ink/30 hover:text-ink'" class="border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider transition-colors" x-text="opt"></button>
+            </template>
+          </div>
+        </div>
+        <div class="col-span-2 px-5 py-4">
+          <label class="font-mono text-xs uppercase tracking-wider text-muted">Region</label>
+          <select x-model="region" class="mt-2 w-full border border-line bg-surface px-2.5 py-1.5 text-xs text-ink focus:border-ink focus:outline-none">
+            <option>All</option>
+            <option>North</option>
+            <option>South</option>
+            <option>East</option>
+            <option>West</option>
+          </select>
+        </div>
+        <div class="col-span-3 px-5 py-4">
+          <label class="font-mono text-xs uppercase tracking-wider text-muted">Batch ID</label>
+          <input type="text" placeholder="Enter batch ID" class="mt-2 w-full border border-line bg-surface px-2.5 py-1.5 font-mono text-xs text-ink placeholder:text-muted focus:border-ink focus:outline-none">
+        </div>
+        <div class="col-span-2 px-5 py-4">
+          <label class="font-mono text-xs uppercase tracking-wider text-muted">Date Range</label>
+          <input type="text" placeholder="Select date range" class="mt-2 w-full border border-line bg-surface px-2.5 py-1.5 font-mono text-xs text-ink placeholder:text-muted focus:border-ink focus:outline-none">
+        </div>
+        <div class="col-span-2 flex items-end gap-2 px-5 py-4">
+          <button class="flex-1 border border-ink bg-ink px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-accent hover:text-accentInk">
+            <span class="font-mono uppercase tracking-wider">Apply</span>
+          </button>
+          <button class="border border-line bg-surface px-3 py-2 text-xs font-medium text-muted transition-colors hover:border-ink/30 hover:text-ink">
+            <span class="font-mono uppercase tracking-wider">Reset</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="mt-6 border border-line bg-surface">
+      <div class="flex items-center justify-between border-b border-line px-5 py-4">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-xs uppercase tracking-wider text-muted">02</span>
+          <h2 class="font-display text-sm font-medium text-ink">Planned routes</h2>
+          <span class="border border-line bg-raised px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted">7 of 1,284</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-ink/30 hover:text-ink">
+            <iconify-icon icon="lucide:filter" class="align-middle text-[13px]"></iconify-icon>
+            <span class="ml-1.5 align-middle font-mono uppercase tracking-wider">Columns</span>
+          </button>
+          <button class="border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-ink/30 hover:text-ink">
+            <iconify-icon icon="lucide:file-down" class="align-middle text-[13px]"></iconify-icon>
+            <span class="ml-1.5 align-middle font-mono uppercase tracking-wider">Export CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-line text-left">
+            <th class="w-10 px-5 py-3">
+              <input type="checkbox" class="h-3.5 w-3.5 border border-line accent-[#FF4D00]">
+            </th>
+            <th class="px-4 py-3 font-mono text-xs font-medium uppercase tracking-wider text-muted">Route ID</th>
+            <th class="px-4 py-3 font-mono text-xs font-medium uppercase tracking-wider text-muted">Batch ID</th>
+            <th class="px-4 py-3 font-mono text-xs font-medium uppercase tracking-wider text-muted">Origin</th>
+            <th class="px-4 py-3 font-mono text-xs font-medium uppercase tracking-wider text-muted">Destination</th>
+            <th class="px-4 py-3 font-mono text-xs font-medium uppercase tracking-wider text-muted">Status</th>
+            <th class="px-4 py-3 text-right font-mono text-xs font-medium uppercase tracking-wider text-muted">ETA</th>
+            <th class="px-5 py-3 text-right font-mono text-xs font-medium uppercase tracking-wider text-muted">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line">
+          <!-- Row 1 -->
+          <tr class="transition-colors hover:bg-raised/60">
+            <td class="px-5 py-3.5"><input type="checkbox" class="h-3.5 w-3.5 border border-line accent-[#FF4D00]"></td>
+            <td class="px-4 py-3.5 font-mono text-xs font-medium text-ink">AQ-101</td>
+            <td class="px-4 py-3.5 font-mono text-xs text-muted">B-2026-06-28-001</td>
+            <td class="px-4 py-3.5 text-ink">Nashik Centre</td>
+            <td class="px-4 py-3.5 text-ink">Mumbai Market</td>
+            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 border border-amber-300 bg-amber-50 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-700"><span class="h-1.5 w-1.5 bg-amber-500"></span>Feasible</span></td>
+            <td class="px-4 py-3.5 text-right font-mono text-xs tabular-nums text-ink">2026-06-29 08:30</td>
+            <td class="px-5 py-3.5">
+              <div class="flex items-center justify-end gap-1">
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Re-solve</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Assign</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">View</span></button>
+              </div>
+            </td>
+          </tr>
+          <!-- Row 2 - verified optimum (accent moment) -->
+          <tr class="transition-colors hover:bg-raised/60">
+            <td class="px-5 py-3.5"><input type="checkbox" class="h-3.5 w-3.5 border border-line accent-[#FF4D00]"></td>
+            <td class="px-4 py-3.5 font-mono text-xs font-medium text-ink">AQ-102</td>
+            <td class="px-4 py-3.5 font-mono text-xs text-muted">B-2026-06-28-002</td>
+            <td class="px-4 py-3.5 text-ink">Pune Centre</td>
+            <td class="px-4 py-3.5 text-ink">Mumbai Market</td>
+            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 border border-accent/40 bg-accent/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-accent"><iconify-icon icon="lucide:check" class="text-[11px]"></iconify-icon>Verified Optimum</span></td>
+            <td class="px-4 py-3.5 text-right font-mono text-xs tabular-nums text-ink">2026-06-29 09:15</td>
+            <td class="px-5 py-3.5">
+              <div class="flex items-center justify-end gap-1">
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Re-solve</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Assign</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">View</span></button>
+              </div>
+            </td>
+          </tr>
+          <!-- Row 3 - in transit -->
+          <tr class="transition-colors hover:bg-raised/60">
+            <td class="px-5 py-3.5"><input type="checkbox" class="h-3.5 w-3.5 border border-line accent-[#FF4D00]"></td>
+            <td class="px-4 py-3.5 font-mono text-xs font-medium text-ink">AQ-103</td>
+            <td class="px-4 py-3.5 font-mono text-xs text-muted">B-2026-06-28-003</td>
+            <td class="px-4 py-3.5 text-ink">Nagpur Centre</td>
+            <td class="px-4 py-3.5 text-ink">Delhi Market</td>
+            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 border border-ink/20 bg-ink px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white"><span class="h-1.5 w-1.5 animate-pulse bg-accent"></span>In Transit</span></td>
+            <td class="px-4 py-3.5 text-right font-mono text-xs tabular-nums text-ink">2026-06-29 14:00</td>
+            <td class="px-5 py-3.5">
+              <div class="flex items-center justify-end gap-1">
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Re-solve</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Assign</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">View</span></button>
+              </div>
+            </td>
+          </tr>
+          <!-- Row 4 -->
+          <tr class="transition-colors hover:bg-raised/60">
+            <td class="px-5 py-3.5"><input type="checkbox" class="h-3.5 w-3.5 border border-line accent-[#FF4D00]"></td>
+            <td class="px-4 py-3.5 font-mono text-xs font-medium text-ink">AQ-104</td>
+            <td class="px-4 py-3.5 font-mono text-xs text-muted">B-2026-06-28-004</td>
+            <td class="px-4 py-3.5 text-ink">Indore Centre</td>
+            <td class="px-4 py-3.5 text-ink">Delhi Market</td>
+            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 border border-amber-300 bg-amber-50 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-700"><span class="h-1.5 w-1.5 bg-amber-500"></span>Feasible</span></td>
+            <td class="px-4 py-3.5 text-right font-mono text-xs tabular-nums text-ink">2026-06-29 18:45</td>
+            <td class="px-5 py-3.5">
+              <div class="flex items-center justify-end gap-1">
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Re-solve</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Assign</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">View</span></button>
+              </div>
+            </td>
+          </tr>
+          <!-- Row 5 -->
+          <tr class="transition-colors hover:bg-raised/60">
+            <td class="px-5 py-3.5"><input type="checkbox" class="h-3.5 w-3.5 border border-line accent-[#FF4D00]"></td>
+            <td class="px-4 py-3.5 font-mono text-xs font-medium text-ink">AQ-105</td>
+            <td class="px-4 py-3.5 font-mono text-xs text-muted">B-2026-06-28-005</td>
+            <td class="px-4 py-3.5 text-ink">Lucknow Centre</td>
+            <td class="px-4 py-3.5 text-ink">Kolkata Market</td>
+            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 border border-accent/40 bg-accent/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-accent"><iconify-icon icon="lucide:check" class="text-[11px]"></iconify-icon>Verified Optimum</span></td>
+            <td class="px-4 py-3.5 text-right font-mono text-xs tabular-nums text-ink">2026-06-30 07:20</td>
+            <td class="px-5 py-3.5">
+              <div class="flex items-center justify-end gap-1">
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Re-solve</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Assign</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">View</span></button>
+              </div>
+            </td>
+          </tr>
+          <!-- Row 6 -->
+          <tr class="transition-colors hover:bg-raised/60">
+            <td class="px-5 py-3.5"><input type="checkbox" class="h-3.5 w-3.5 border border-line accent-[#FF4D00]"></td>
+            <td class="px-4 py-3.5 font-mono text-xs font-medium text-ink">AQ-106</td>
+            <td class="px-4 py-3.5 font-mono text-xs text-muted">B-2026-06-28-006</td>
+            <td class="px-4 py-3.5 text-ink">Jaipur Centre</td>
+            <td class="px-4 py-3.5 text-ink">Delhi Market</td>
+            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 border border-amber-300 bg-amber-50 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-700"><span class="h-1.5 w-1.5 bg-amber-500"></span>Feasible</span></td>
+            <td class="px-4 py-3.5 text-right font-mono text-xs tabular-nums text-ink">2026-06-30 11:10</td>
+            <td class="px-5 py-3.5">
+              <div class="flex items-center justify-end gap-1">
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Re-solve</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Assign</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">View</span></button>
+              </div>
+            </td>
+          </tr>
+          <!-- Row 7 -->
+          <tr class="transition-colors hover:bg-raised/60">
+            <td class="px-5 py-3.5"><input type="checkbox" class="h-3.5 w-3.5 border border-line accent-[#FF4D00]"></td>
+            <td class="px-4 py-3.5 font-mono text-xs font-medium text-ink">AQ-107</td>
+            <td class="px-4 py-3.5 font-mono text-xs text-muted">B-2026-06-28-007</td>
+            <td class="px-4 py-3.5 text-ink">Bhopal Centre</td>
+            <td class="px-4 py-3.5 text-ink">Mumbai Market</td>
+            <td class="px-4 py-3.5"><span class="inline-flex items-center gap-1.5 border border-ink/20 bg-ink px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white"><span class="h-1.5 w-1.5 animate-pulse bg-accent"></span>In Transit</span></td>
+            <td class="px-4 py-3.5 text-right font-mono text-xs tabular-nums text-ink">2026-06-30 16:30</td>
+            <td class="px-5 py-3.5">
+              <div class="flex items-center justify-end gap-1">
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Re-solve</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">Assign</span></button>
+                <button class="border border-line bg-surface px-2 py-1 text-[10px] font-medium text-muted transition-colors hover:border-ink hover:text-ink"><span class="font-mono uppercase tracking-wider">View</span></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination footer -->
+      <div class="flex items-center justify-between border-t border-line px-5 py-4">
+        <div class="flex items-center gap-4">
+          <span class="font-mono text-xs uppercase tracking-wider text-muted">Page 1 of 5</span>
+          <span class="h-3 w-px bg-line"></span>
+          <span class="font-mono text-xs uppercase tracking-wider text-muted">Rows 1–7 of 1,284</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-ink/30 hover:text-ink disabled:opacity-40" disabled="">
+            <iconify-icon icon="lucide:chevron-left" class="align-middle text-[13px]"></iconify-icon>
+            <span class="ml-1.5 align-middle font-mono uppercase tracking-wider">Previous</span>
+          </button>
+          <div class="flex items-center">
+            <button class="border border-ink bg-ink px-3 py-1.5 font-mono text-xs text-white">1</button>
+            <button class="border border-line bg-surface px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-ink/30 hover:text-ink">2</button>
+            <button class="border border-line bg-surface px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-ink/30 hover:text-ink">3</button>
+            <button class="border border-line bg-surface px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-ink/30 hover:text-ink">4</button>
+            <button class="border border-line bg-surface px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-ink/30 hover:text-ink">5</button>
+          </div>
+          <button class="border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-ink/30 hover:text-ink">
+            <span class="mr-1.5 align-middle font-mono uppercase tracking-wider">Next</span>
+            <iconify-icon icon="lucide:chevron-right" class="align-middle text-[13px]"></iconify-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div></main>
+</body>
+</html>
